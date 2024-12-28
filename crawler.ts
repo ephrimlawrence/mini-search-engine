@@ -1,41 +1,69 @@
-// @ts-check
-
-import { Website, pageTitle } from "@spider-rs/spider-rs";
 import { readFileSync } from "node:fs";
 
-const domains: string[] = readFileSync(`${__dirname}/domains.txt`, "utf-8")
-	.split("\n")
-	.map((domain) => domain.trim());
+const cluster = require("node:cluster");
+const numCPUs = require("node:os").availableParallelism();
+const process = require('node:process');
 
-// read domains from file
-// const domains: string[] = readFileSync(`${__dirname}/domains.txt`, "utf-8")
-console.log(domains);
-async function run() {
-	const website = new Website("https://rsseau.fr")
-		.withHeaders({
-			authorization: "somerandomjwt",
-		})
-		.withBudget({
-			"*": 20, // limit max request 20 pages for the website
-		})
-		.withBlacklistUrl(["/resume"]) // regex or pattern matching to ignore paths
-		.build();
+if (cluster.isPrimary) {
+	console.log(`Primary ${process.pid} is running`);
 
-	// optional: page event handler
-	const onPageEvent = (_err, page) => {
-		const title = pageTitle(page); // comment out to increase performance if title not needed
-		console.info(`Title of ${page.url} is '${title}'`);
-		website.pushData({
-			status: page.statusCode,
-			html: page.content,
-			url: page.url,
-			title,
-		});
-	};
+	const domains: string[] = readFileSync(`${__dirname}/domains.txt`, "utf-8")
+		.split("\n")
+		.map((domain) => `https://${domain.trim()}`);
 
-	await website.crawl(onPageEvent);
-	await website.exportJsonlData("./storage/rsseau.jsonl");
-	console.log(website.getLinks());
+	const crawledDomains: {
+		[domain: string]: { worker: number | null; done: boolean };
+	} = {};
+
+	for (const domain of domains) {
+		crawledDomains[domain] = { done: false, worker: null };
+	}
+
+	// Fork workers.
+	for (let i = 0; i < numCPUs; i++) {
+		const d = domains.pop();
+		if (d != null && !crawledDomains[d].done) {
+			const worker = cluster.fork({ DOMAIN: d });
+			crawledDomains[d].worker = worker.id;
+		}
+	}
+
+    cluster.on("message", (worker, message) => {
+        if (message.type === 'done') {
+            const domain = message.domain;
+            crawledDomains[domain] = { done: true, worker: null };
+            console.log(`${domain} crawled successfully!`);
+
+            // Fork a new worker with the next domain
+            const d = domains.pop();
+            if (d != null && !crawledDomains[d].done) {
+                const newWorker = cluster.fork({ DOMAIN: d });
+                crawledDomains[d].worker = newWorker.id;
+            }
+        }
+    });
+
+	cluster.on("exit", (worker, code, signal) => {
+		console.log(`worker ${worker.process.pid} died`);
+        // // console.log(code, signal, worker)
+		// if (code === 0) {
+		// 	// success
+        //     console.log(worker.env)
+		// 	const _d = worker.process.env.DOMAIN;
+		// 	crawledDomains[_d] = { done: true, worker: null };
+		// 	console.log(`${_d} crawled successfully!`);
+
+		// 	// Fork a new worker with the next domain
+		// 	const d = domains.pop();
+        //     console.log(domains)
+		// 	if (d != null && !crawledDomains[d].done) {
+		// 		const worker = cluster.fork({ DOMAIN: d });
+		// 		crawledDomains[d].worker = worker.id;
+		// 	}
+		// }
+	});
+} else {
+	require("./worker");
+
+	console.log(`Worker ${process.pid} started`);
 }
-
-// run();

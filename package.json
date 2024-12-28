@@ -1,9 +1,14 @@
 {
   "scripts": {
-    "crawl": "tsx crawler.ts"
+    "crawl": "tsx crawler.ts",
+    "tsx": "tsx"
   },
   "dependencies": {
     "@spider-rs/spider-rs": "^0.0.157",
+    "html-to-text": "^9.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
     "tsx": "^4.19.2"
   }
 }
