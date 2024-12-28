@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "crawl": "tsx crawler.ts"
+  },
+  "dependencies": {
+    "@spider-rs/spider-rs": "^0.0.157",
+    "tsx": "^4.19.2"
+  }
+}
