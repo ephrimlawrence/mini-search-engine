@@ -1,1 +1,4 @@
 * url polution
+* js rendering on some sites like angular
+* script does not exists when not in background mode
+* script exists in background mode but data not stored in heap memory

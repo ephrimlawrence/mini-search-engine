@@ -11,7 +11,7 @@ if (cluster.isPrimary) {
 
 	const domains: string[] = readFileSync(`${__dirname}/domains.txt`, "utf-8")
 		.split("\n")
-		.map((domain) => `https://${domain.trim()}`);
+		.map((domain) => domain.trim());
 
 	const crawledDomains: {
 		[domain: string]: { worker: number | null; done: boolean };
