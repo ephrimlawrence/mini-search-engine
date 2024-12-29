@@ -67,5 +67,5 @@ if (cluster.isPrimary) {
 } else {
 	require("./worker");
 
-	console.log(`Worker ${process.pid} started`);
+	console.log(`\n--Worker ${process.pid} started`);
 }

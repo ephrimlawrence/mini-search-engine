@@ -1,5 +1,5 @@
 // import pgPromise from "pg-promise";
-import { Db, MongoClient } from "mongodb";
+import { type Db, MongoClient } from "mongodb";
 
 const client = new MongoClient("mongodb://localhost:27017")
 export let db: Db;
@@ -19,7 +19,7 @@ export let db: Db;
 export async function setupDb() {
     try {
         await client.connect();
-        console.log("Connected to MongoDB");
+        // console.log("Connected to MongoDB");
 
         db = client.db("search_engine");
 
@@ -27,7 +27,7 @@ export async function setupDb() {
         await db.createCollection("websites");
         await db.collection("websites").createIndex({ url: 1 }, { unique: true });
 
-        console.log("Database setup completed");
+        // console.log("Database setup completed");
     } catch (error) {
         console.error("Error setting up the database:", error);
     }
