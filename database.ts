@@ -1,30 +1,36 @@
-import pgPromise from "pg-promise";
+// import pgPromise from "pg-promise";
+import { Db, MongoClient } from "mongodb";
 
-const pgp = pgPromise({
-	capSQL: true, // capitalize all generated SQL
-	schema: ["public"],
-});
+const client = new MongoClient("mongodb://localhost:27017")
+export let db: Db;
+// const pgp = pgPromise({
+// 	capSQL: true, // capitalize all generated SQL
+// 	schema: ["public"],
+// });
 
-export const DB = pgp({
-	host: "localhost",
-	port: 5432,
-	database: "search_engine",
-	user: process.env.POSTGRES_USERNAME || "ephrim",
-	password: process.env.POSTGRES_PASSWORD,
-});
+// export const DB = pgp({
+// 	host: "localhost",
+// 	port: 5432,
+// 	database: "search_engine",
+// 	user: process.env.POSTGRES_USERNAME || "ephrim",
+// 	password: process.env.POSTGRES_PASSWORD,
+// });
 
 export async function setupDb() {
-	DB.none(`
-        CREATE TABLE IF NOT EXISTS websites (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            url TEXT NOT NULL UNIQUE,
-            domain TEXT NOT NULL,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL
-        );
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
 
-        CREATE INDEX IF NOT EXISTS websites_url_idx ON websites(url);
-    `);
+        db = client.db("search_engine");
+
+        // Create a collection and an index
+        await db.createCollection("websites");
+        await db.collection("websites").createIndex({ url: 1 }, { unique: true });
+
+        console.log("Database setup completed");
+    } catch (error) {
+        console.error("Error setting up the database:", error);
+    }
 }
 
 setupDb();

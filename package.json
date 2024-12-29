@@ -7,6 +7,7 @@
     "@spider-rs/spider-rs": "^0.0.157",
     "crawler": "^2.0.2",
     "html-to-text": "^9.0.5",
+    "mongodb": "^6.12.0",
     "pg-promise": "^11.10.2"
   },
   "devDependencies": {
