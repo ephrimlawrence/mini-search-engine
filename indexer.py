@@ -57,20 +57,37 @@ schema = schema_builder.build()
 # Creating our index
 index = tantivy.Index(schema, path=path.abspath("index"))
 # build_index(index)
-
 index.reload()
-searcher = index.searcher()
 
-query = index.parse_query("Create and manipulate matrix objects", ["title", "content"])
-snippet_generator = SnippetGenerator.create(searcher, query, schema, "content")
 
-hits = searcher.search(query, 10).hits
-for h in hits:
-    (best_score, best_doc_address) = h
-    best_doc = searcher.doc(best_doc_address)
-    # print(best_doc.to_dict())
+def perform_search(q: str):
+    searcher = index.searcher()
+    query = index.parse_query(q, ["title", "content"])
+    snippet_generator = SnippetGenerator.create(searcher, query, schema, "content")
+    hits = searcher.search(query, 10).hits
 
-    snippet = snippet_generator.snippet_from_doc(best_doc)
-    # highlights = snippet.highlighted()
-    # print(highlights)
-    print(snippet.to_html())
+    results = []
+    for h in hits:
+        (_, best_doc_address) = h
+        best_doc = searcher.doc(best_doc_address)
+        snippet = snippet_generator.snippet_from_doc(best_doc)
+
+        d = best_doc.to_dict()
+        results.append(
+            {"title": d["title"][0], "snippet": snippet.to_html(), "url": d["url"][0]}
+        )
+
+    return results
+
+
+# query = index.parse_query("Create and manipulate matrix objects", ["title", "content"])
+
+# hits = searcher.search(query, 10).hits
+# for h in hits:
+#     (best_score, best_doc_address) = h
+#     best_doc = searcher.doc(best_doc_address)
+#     # print(best_doc.to_dict())
+
+#     # highlights = snippet.highlighted()
+#     # print(highlights)
+#     print(snippet.to_html())

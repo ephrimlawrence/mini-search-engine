@@ -20,11 +20,27 @@
             {# <div class="search-container mt-5"> #}
             <div class="row mt-5 overflow-hidden text-center">
                 <div class="ps-5 pe-5">
-                    <form class="form-inline d-flex justify-content-center">
-                        <input class="form-control mr-2 search-input" type="search" placeholder="Search" aria-label="Search">
+                    <form class="form-inline d-flex justify-content-center" method="get" action="">
+                        <input class="form-control mr-2 search-input" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ query }}">
                         <button class="btn btn-primary search-button" type="submit">Search</button>
                     </form>
                 </div>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+            <div class="col-12">
+                <div class="list-group">
+                {% for result in results %}
+                <a href="{{ result.url }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ result.title }}</h5>
+                    <p class="mb-1">{{ result.snippet | safe }}</p>
+                    <small>{{ result.url }}</small>
+                </a>
+                {% endfor %}
+                </div>
+            </div>
             </div>
         </div>
 
