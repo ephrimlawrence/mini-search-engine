@@ -1,3 +1,4 @@
+import time
 from os import path
 
 import tantivy
@@ -64,7 +65,10 @@ def perform_search(q: str):
     searcher = index.searcher()
     query = index.parse_query(q, ["title", "content"])
     snippet_generator = SnippetGenerator.create(searcher, query, schema, "content")
+
+    start_time = time.time()
     hits = searcher.search(query, 10).hits
+    end_time = time.time()
 
     results = []
     for h in hits:
@@ -77,7 +81,7 @@ def perform_search(q: str):
             {"title": d["title"][0], "snippet": snippet.to_html(), "url": d["url"][0]}
         )
 
-    return results
+    return (results, end_time - start_time)
 
 
 # query = index.parse_query("Create and manipulate matrix objects", ["title", "content"])

@@ -10,10 +10,11 @@ index.reload()
 def hello_world():
     query = request.args.get("q")
     results = []
+    latency = None
     if query is not None:
-        results = perform_search(query)
+        (results, latency) = perform_search(query)
         # print(results)
     else:
         query = ""
 
-    return render_template("index.html", results=results, query=query)
+    return render_template("index.html", results=results, query=query, latency=latency)
