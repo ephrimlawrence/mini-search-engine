@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "crawl": "tsx crawler.ts",
+    "headless-chrome": "chromium --headless --remote-debugging-port=9222",
+    "crawl": "npm run headless-chrome; tsx crawler.ts",
     "tsx": "tsx"
   },
   "dependencies": {

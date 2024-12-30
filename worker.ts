@@ -10,7 +10,10 @@ const PAGE_LIMIT = 10000
 async function run() {
 	console.log(`crawling domain ${domain}`);
 
-	const crawledPages: Array<{ url: string, title: string, domain: string, content: string, statusCode: number }> = []
+	let crawledPages: Array<{
+		url: string, title: string, domain: string,
+		content: string, statusCode: number, error: string | null
+	}> = []
 	let count = 0;
 
 	const website = new Website(domain)
@@ -28,15 +31,31 @@ async function run() {
 	// optional: page event handler
 	const onPageEvent = async (_err, page: NPage) => {
 		const title = pageTitle(page);
-		if (page.statusCode === 200) {
+		let content = '';
+		let error = null;
+
+		try {
+			content = convert(page.content)
+		} catch (error) {
+			error = error.message
+		} finally {
 			// console.log(`Title: ${title}`);
 			crawledPages.push({
 				statusCode: page.statusCode,
-				content: convert(page.content),
+				content: content,
 				url: page.url,
 				title,
 				domain: domain,
+				error: error
 			})
+			count += 1
+
+			if (count === 500) {
+				await db.collection("websites").insertMany(crawledPages)
+
+				crawledPages = []
+				count = 0
+			}
 		}
 	};
 
@@ -46,6 +65,7 @@ async function run() {
 		// await db.collection("websites").deleteMany({ domain: domain })
 		await db.collection("websites").insertMany(crawledPages)
 	}
+	await db.collection("crawled_domains").insertOne({ domain, date: new Date() })
 
 	// process.exit(0);
 	process.send({ type: "done", domain: domain });
