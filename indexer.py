@@ -57,8 +57,6 @@ schema = schema_builder.build()
 
 # Creating our index
 index = tantivy.Index(schema, path=path.abspath("index"))
-# build_index(index)
-index.reload()
 
 
 def perform_search(q: str):
@@ -84,14 +82,17 @@ def perform_search(q: str):
     return (results, end_time - start_time)
 
 
-# query = index.parse_query("Create and manipulate matrix objects", ["title", "content"])
+if __name__ == "__main__":
+    build_index(index)
+    index.reload()
 
-# hits = searcher.search(query, 10).hits
-# for h in hits:
-#     (best_score, best_doc_address) = h
-#     best_doc = searcher.doc(best_doc_address)
-#     # print(best_doc.to_dict())
+    print("Performing search....")
 
-#     # highlights = snippet.highlighted()
-#     # print(highlights)
-#     print(snippet.to_html())
+    (results, latency) = perform_search("why use vuejs")
+
+    print(f"completed in {latency}ms")
+    for r in results:
+        print(f" {r["title"].strip()}")
+        print(f"    {r["snippet"].strip()}")
+        print(f"    {r["url"].strip()}")
+        print("---" * 10)

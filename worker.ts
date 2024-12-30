@@ -10,7 +10,9 @@ const PAGE_LIMIT = 10000
 async function run() {
 	console.log(`crawling domain ${domain}`);
 
-	const crawledPages: Array<{ url: string, title: string, domain: string, content: string }> = []
+	const crawledPages: Array<{ url: string, title: string, domain: string, content: string, statusCode: number }> = []
+	let count = 0;
+
 	const website = new Website(domain)
 		.withBudget({
 			"*": PAGE_LIMIT, // limit to 10k pages per domain
@@ -29,6 +31,7 @@ async function run() {
 		if (page.statusCode === 200) {
 			// console.log(`Title: ${title}`);
 			crawledPages.push({
+				statusCode: page.statusCode,
 				content: convert(page.content),
 				url: page.url,
 				title,
@@ -40,7 +43,7 @@ async function run() {
 	await website.crawl(onPageEvent, false, true);
 
 	if (crawledPages.length > 0) {
-		await db.collection("websites").deleteMany({ domain: domain })
+		// await db.collection("websites").deleteMany({ domain: domain })
 		await db.collection("websites").insertMany(crawledPages)
 	}
 
