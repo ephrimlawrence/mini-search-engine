@@ -1,4 +1,3 @@
-import base64
 from os import path
 
 import tantivy
@@ -22,8 +21,6 @@ def build_index(index: tantivy.Index):
         results = collection.find({"domain": domain.strip()})
 
         for d in results:
-            # print(str(d["_id"].binary.hex()))
-            # print(str(d["_id"].binary.hex()))
             writer.add_document(
                 tantivy.Document(
                     doc_id=d["_id"].binary.hex(),
@@ -37,7 +34,7 @@ def build_index(index: tantivy.Index):
         writer.wait_merging_threads()
 
 
-# Declaring our schema.
+# Define schema
 schema_builder = tantivy.SchemaBuilder()
 schema_builder.add_text_field("title", stored=True, tokenizer_name="en_stem")
 schema_builder.add_text_field("content", stored=True, tokenizer_name="en_stem")
@@ -77,6 +74,3 @@ for h in hits:
     # highlights = snippet.highlighted()
     # print(highlights)
     print(snippet.to_html())
-# print(hits)
-# print(best_score, best_doc_address)
-# assert best_doc["title"] == ["The Old Man and the Sea"]

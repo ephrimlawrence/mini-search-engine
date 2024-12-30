@@ -1,3 +1,6 @@
 venv
 node_modules
 http-cacache
+__pycache__
+storage
+storagehttps:
