@@ -5,6 +5,7 @@ const process = require("node:process");
 const { convert } = require("html-to-text");
 
 const domain = process.env.DOMAIN || "developer.mozilla.org";
+const PAGE_LIMIT = 10000
 
 async function run() {
 	console.log(`crawling domain ${domain}`);
@@ -12,7 +13,7 @@ async function run() {
 	const crawledPages: Array<{ url: string, title: string, domain: string, content: string }> = []
 	const website = new Website(domain)
 		.withBudget({
-			"*": 5, // limit to 10k pages per domain
+			"*": PAGE_LIMIT, // limit to 10k pages per domain
 		})
 		.withDepth(0)
 		.withStealth(true)
@@ -26,6 +27,7 @@ async function run() {
 	const onPageEvent = async (_err, page: NPage) => {
 		const title = pageTitle(page);
 		if (page.statusCode === 200) {
+			// console.log(`Title: ${title}`);
 			crawledPages.push({
 				content: convert(page.content),
 				url: page.url,
