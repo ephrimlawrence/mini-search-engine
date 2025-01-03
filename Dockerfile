@@ -21,6 +21,5 @@ ADD templates /app/templates
 EXPOSE 80
 
 RUN pip show gunicorn
-RUN ls -alh /app/templates
 
 CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
