@@ -1,3 +1,4 @@
+import argparse
 import time
 from os import path
 
@@ -83,7 +84,13 @@ def perform_search(q: str):
 
 
 if __name__ == "__main__":
-    build_index(index)
+    parser = argparse.ArgumentParser(description="Indexing and Search Script")
+    parser.add_argument("--build", action="store_true", help="Build the index")
+    args = parser.parse_args()
+
+    if args.build:
+        build_index(index)
+
     index.reload()
 
     print("Performing search....")
