@@ -4,3 +4,5 @@ http-cacache
 __pycache__
 storage
 storagehttps:
+.env
+index.tar.gz

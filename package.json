@@ -2,7 +2,9 @@
   "scripts": {
     "headless-chrome": "chromium --headless --remote-debugging-port=9222",
     "crawl": "npm run headless-chrome & CHROME_URL=http://localhost:9222 tsx crawler.ts",
-    "tsx": "tsx"
+    "tsx": "tsx",
+    "serve": "flask run --reload --debug",
+    "publish-index": "tar -zcvf /tmp/index.tar.gz index/ && b2 file upload search-engine-index /tmp/index.tar.gz index.tar.gz"
   },
   "dependencies": {
     "@spider-rs/spider-rs": "^0.0.157",
