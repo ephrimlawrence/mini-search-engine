@@ -25,7 +25,7 @@ export async function setupDb() {
 
         // Create a collection and an index
         await db.createCollection("websites");
-        await db.collection("websites").createIndex({ url: 1 }, { unique: true });
+        // await db.collection("websites").createIndex({ url: 1 }, { unique: true });
 
         // console.log("Database setup completed");
     } catch (error) {

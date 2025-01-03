@@ -11,6 +11,7 @@ if (cluster.isPrimary) {
 
 	const domains: string[] = readFileSync(`${__dirname}/domains.txt`, "utf-8")
 		.split("\n")
+		.filter(d => d !== '')
 		.map((domain) => domain.trim());
 
 	const crawledDomains: {

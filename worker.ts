@@ -4,8 +4,8 @@ import Crawler from "crawler";
 const process = require("node:process");
 const { convert } = require("html-to-text");
 
-const domain = process.env.DOMAIN || "developer.mozilla.org";
-const PAGE_LIMIT = 10000
+const domain = process.env.DOMAIN;
+const PAGE_LIMIT = 1000
 
 async function run() {
 	console.log(`crawling domain ${domain}`);
@@ -51,7 +51,11 @@ async function run() {
 			count += 1
 
 			if (count === 500) {
-				await db.collection("websites").insertMany(crawledPages)
+				try {
+					await db.collection("websites").insertMany(crawledPages)
+				} catch (error) {
+					console.log(error)
+				}
 
 				crawledPages = []
 				count = 0
@@ -63,7 +67,11 @@ async function run() {
 
 	if (crawledPages.length > 0) {
 		// await db.collection("websites").deleteMany({ domain: domain })
-		await db.collection("websites").insertMany(crawledPages)
+		try {
+			await db.collection("websites").insertMany(crawledPages)
+		} catch (error) {
+			console.log(error)
+		}
 	}
 	await db.collection("crawled_domains").insertOne({ domain, date: new Date() })
 
