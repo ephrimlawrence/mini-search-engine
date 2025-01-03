@@ -20,5 +20,6 @@ ADD templates /app
 
 EXPOSE 80
 
-# Run app.py when the container launches
-CMD ["gunicorn", "--bind", '127.0.0.1:80', "app:app"]
+RUN pip show gunicorn
+
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
