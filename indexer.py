@@ -1,6 +1,6 @@
 import argparse
 import time
-from os import path
+from os import getenv, path
 
 import tantivy
 from pymongo import MongoClient
@@ -8,7 +8,7 @@ from tantivy import SnippetGenerator
 
 
 def get_database():
-    CONNECTION_STRING = "mongodb://localhost:27017"
+    CONNECTION_STRING = f"mongodb://localhost:{getenv("DB_PORT", '27017')}"
     client = MongoClient(CONNECTION_STRING)
 
     return client["search_engine"]
