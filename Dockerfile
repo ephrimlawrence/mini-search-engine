@@ -7,6 +7,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ARG B2_APP_KEY
 ARG B2_APP_ID
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_URL
+
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+ENV DB_URL=$DB_URL
 
 # Pull latest index for backblaze bucket
 RUN b2 account authorize $B2_APP_ID $B2_APP_KEY
