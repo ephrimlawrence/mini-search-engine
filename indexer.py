@@ -8,7 +8,7 @@ from tantivy import SnippetGenerator
 
 
 def get_database():
-    CONNECTION_STRING = f"mongodb://localhost:{getenv("DB_PORT", '27017')}"
+    CONNECTION_STRING = f"mongodb://{getenv("DB_URL", 'localhost:27017')}"
     client = MongoClient(CONNECTION_STRING)
 
     return client["search_engine"]
