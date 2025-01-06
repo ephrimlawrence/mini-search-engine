@@ -1,6 +1,6 @@
 import argparse
 import time
-from os import getenv, path
+from os import path
 
 import tantivy
 from pymongo import MongoClient
@@ -8,7 +8,7 @@ from tantivy import SnippetGenerator
 
 
 def get_database():
-    CONNECTION_STRING = f"mongodb+srv://{getenv("DB_USER")}:{getenv("DB_PASSWORD")}@{getenv("DB_URL")}/?retryWrites=true&w=majority&appName=Cluster0"
+    CONNECTION_STRING = "mongodb://localhost:27017"
     client = MongoClient(CONNECTION_STRING)
 
     return client["search_engine"]
