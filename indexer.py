@@ -3,11 +3,14 @@ import time
 from os import getenv, path
 
 import tantivy
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from tantivy import SnippetGenerator
 
 
 def get_database():
+    load_dotenv()
+
     CONNECTION_STRING = f"mongodb://{getenv("DB_URL", 'localhost:27017')}"
     client = MongoClient(CONNECTION_STRING)
 
