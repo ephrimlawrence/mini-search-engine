@@ -11,7 +11,7 @@ from tantivy import SnippetGenerator
 def get_database():
     load_dotenv()
 
-    CONNECTION_STRING = f"mongodb://{getenv("DB_URL", 'localhost:27017')}"
+    CONNECTION_STRING = f"{getenv("DB_URL", 'mongodb://localhost:27017')}"
     client = MongoClient(CONNECTION_STRING)
 
     return client["search_engine"]
@@ -28,7 +28,8 @@ def build_index(index: tantivy.Index):
         for d in results:
             writer.add_document(
                 tantivy.Document(
-                    doc_id=d["_id"].binary.hex(),
+                    # doc_id=d["_id"].binary.hex(),
+                    doc_id=d.get("url"),
                     title=[d.get("title")],
                     content=[d.get("content")],
                     url=[d.get("url")],
