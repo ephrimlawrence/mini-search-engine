@@ -23,9 +23,13 @@ def search():
 def stats():
     collection = get_database()["websites"]
 
+    # add counting of total records to the mongodb query pipeline below
     pipeline = [
         {"$group": {"_id": "$domain", "pages_crawled": {"$sum": 1}}},
         {"$sort": {"pages_crawled": -1}},
     ]
+    total = collection.estimated_document_count()
 
-    return render_template("stats.html", stats=list(collection.aggregate(pipeline)))
+    return render_template(
+        "stats.html", stats=list(collection.aggregate(pipeline)), total=total
+    )
