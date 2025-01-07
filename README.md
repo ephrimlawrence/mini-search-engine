@@ -70,7 +70,9 @@ The tricky bit is deploying the index, since tantivy's index is stored in files.
 
 
 * Docker:
-A `Dockerfile` file is included in the project for deployment on any platform that support docker. The index is pulled from [backbaze](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.backblaze.com/) bucket (can be replaced with S3, etc) during build.
+
+    A `Dockerfile` file is included in the project for deployment on any platform that support docker. The index is pulled from [backbaze](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.backblaze.com/) bucket (can be replaced with S3, etc) during build.
+
 * [PM2](https://pm2.keymetrics.io/)
 
     ```sh
@@ -98,20 +100,24 @@ There are [SaSS proxy services](https://medium.com/zenrows/web-scraping-proxy-bd
 ## Challenges
 
 * Extracting text content from web pages:
-Even though [html-to-text](https://www.npmjs.com/package/html-to-text) package is reasonably good at extracting text content from a page, it nevertheless leaves a lot to be desired. For instance, links are represented like `[https://discord.gg/yarnpkg]` in the final output. I understand that this is a hard problem, and no one library can solve all the edge cases.
 
-Some sites such as https://yarnpkg.com has duplicate text, eg.  "Skip to main content
-Yarn Logo..." in the body of almost all the pages. I think this can only be solved by analyzing the duplicated text parterns and implement a filter to remove them.
+    Even though [html-to-text](https://www.npmjs.com/package/html-to-text) package is reasonably good at extracting text content from a page, it nevertheless leaves a lot to be desired. For instance, links are represented like `[https://discord.gg/yarnpkg]` in the final output. I understand that this is a hard problem, and no one library can solve all the edge cases.
+
+    Some sites such as https://yarnpkg.com has duplicate text, eg.  "Skip to main content Yarn Logo..." in the body of almost all the pages. I think this can only be solved by analyzing the duplicated text parterns and implement a filter to remove them.
 
 * Crawling speed
-Crawling all pages really took a long time, even limited to 1000 pages per domain. It is even get worse when running in headless chrome. This probably is due to my limited bandwidth speed and slow computer. I implemented multi-core crawling to mitigate the problem but bandwidth speed was still a problem.
+
+    Crawling all pages really took a long time, even limited to 1000 pages per domain. It is even get worse when running in headless chrome. This probably is due to my limited bandwidth speed and slow computer. I implemented multi-core crawling to mitigate the problem but bandwidth speed was still a problem.
 
 * Thousands of 404s
-After crawling 111, 989 pages across all the domains. There were 6088 pages that were not found, and were removed from the dataset.
+
+    After crawling 111, 989 pages across all the domains. There were 6088 pages that were not found, and were removed from the dataset.
 
 * Unscrappable domains without headless chrome
-Some domains like angular.io are impossible to scrap without headless chrome. Oddly, this  causes the crawler to hang, because the page doesn't contain any link?
+
+    Some domains like angular.io are impossible to scrap without headless chrome. Oddly, this  causes the crawler to hang, because the page doesn't contain any link?
 
 * Internal library bugs
+
   Spide-nodejs most often do not exit after crawling a domain in headless mode, unless terminated manually.
   MongoDB often throws unique `_id` error on insert, which is very odd because `_id` is automatically generated. This is probably a race condition bug.
