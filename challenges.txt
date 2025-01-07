@@ -1,4 +1,7 @@
-* url polution
+* url pollution
 * js rendering on some sites like angular
 * script does not exists when not in background mode
 * script exists in background mode but data not stored in heap memory
+* extracting content from the page
+* 404s
+* performances

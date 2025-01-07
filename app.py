@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 
 from indexer import get_database, index, perform_search
 
@@ -32,4 +32,12 @@ def stats():
 
     return render_template(
         "stats.html", stats=list(collection.aggregate(pipeline)), total=total
+    )
+
+
+@app.route("/download-index")
+def download_index():
+    # assumes storage/index.tar.gz exists
+    return send_from_directory(
+        directory="storage", path="index.tar.gz", as_attachment=True
     )
