@@ -104,13 +104,14 @@ Some sites such as https://yarnpkg.com has duplicate text, eg.  "Skip to main co
 Yarn Logo..." in the body of almost all the pages. I think this can only be solved by analyzing the duplicated text parterns and implement a filter to remove them.  
 
 * Crawling speed
-Crawling all pages really took a loong time, even limited to 1000 pages per domain. It is even get worse when running in headless chrome. This probably is due to my limited bandwidth and slow computer.
+Crawling all pages really took a long time, even limited to 1000 pages per domain. It is even get worse when running in headless chrome. This probably is due to my limited bandwidth speed and slow computer. I implemented multi-core crawling to mitigate the problem but bandwidth speed was still a problem.
 
 * Thousands of 404s
-After crawling 111, 989 pages across all the domains, there were 6088 pages that were not found.
+After crawling 111, 989 pages across all the domains. There were 6088 pages that were not found, and were removed from the dataset.
 
 * Unscrappable domains without headless chrome
-Some domains like angular.io are impossible to scrap without headless chrome. Oddly, this  causes the crawler to hang.
+Some domains like angular.io are impossible to scrap without headless chrome. Oddly, this  causes the crawler to hang, because the page doesn't contain any link?
 
 * Internal library bugs
-Spide-nodejs most often do not exit after crawling a domain in headless mode, unless terminated manually. MongoDB often throws unique `_id` error on insert, which is very odd because `_id` is automatically generated. This is probably a race condition bug.
+  Spide-nodejs most often do not exit after crawling a domain in headless mode, unless terminated manually. 
+  MongoDB often throws unique `_id` error on insert, which is very odd because `_id` is automatically generated. This is probably a race condition bug.
