@@ -29,7 +29,7 @@ def build_index(index: tantivy.Index):
             writer.add_document(
                 tantivy.Document(
                     # doc_id=d["_id"].binary.hex(),
-                    doc_id=d.get("url"),
+                    # doc_id=d.get("url"),
                     title=[d.get("title")],
                     content=[d.get("content")],
                     url=[d.get("url")],
@@ -44,13 +44,13 @@ def build_index(index: tantivy.Index):
 schema_builder = tantivy.SchemaBuilder()
 schema_builder.add_text_field("title", stored=True, tokenizer_name="en_stem")
 schema_builder.add_text_field("content", stored=True, tokenizer_name="en_stem")
-schema_builder.add_text_field(
-    "doc_id",
-    stored=True,
-    tokenizer_name="raw",
-    index_option="basic",
-    fast=True,  # type: ignore
-)
+# schema_builder.add_text_field(
+#     "doc_id",
+#     stored=True,
+#     tokenizer_name="raw",
+#     index_option="basic",
+#     fast=True,  # type: ignore
+# )
 schema_builder.add_text_field(
     "url",
     stored=True,
@@ -88,7 +88,7 @@ def perform_search(q: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Indexing and Search Script")
+    parser = argparse.ArgumentParser(description="Indexing and Search Test Script")
     parser.add_argument("--build", action="store_true", help="Build the index")
     args = parser.parse_args()
 

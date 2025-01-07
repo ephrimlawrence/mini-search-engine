@@ -1,6 +1,5 @@
 import { type NPage, Website, pageTitle } from "@spider-rs/spider-rs";
 import { db } from "./database";
-import Crawler from "crawler";
 const process = require("node:process");
 const { convert } = require("html-to-text");
 
@@ -28,7 +27,6 @@ async function run() {
 		.withWaitForDelay(2, 500)
 		.build();
 
-	// optional: page event handler
 	const onPageEvent = async (_err, page: NPage) => {
 		const title = pageTitle(page);
 		let content = '';
@@ -50,6 +48,8 @@ async function run() {
 			})
 			count += 1
 
+			// To reduce the number of db writes for each page crawled,
+			// write data to db if 500 pages have to crawled.
 			if (count === 500) {
 				try {
 					await db.collection("websites").insertMany(crawledPages)
@@ -65,6 +65,7 @@ async function run() {
 
 	await website.crawl(onPageEvent, false, true);
 
+	// 'insertMany' throw error if array is empty
 	if (crawledPages.length > 0) {
 		// await db.collection("websites").deleteMany({ domain: domain })
 		try {
@@ -76,6 +77,8 @@ async function run() {
 	await db.collection("crawled_domains").insertOne({ domain, date: new Date() })
 
 	// process.exit(0);
+
+	// Notify parent process that we have finished crawling this domain
 	process.send({ type: "done", domain: domain });
 }
 

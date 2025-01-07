@@ -44,11 +44,11 @@
                 <div class="col-12">
                     <div class="list-group">
                         {% for result in results %}
-                            <a href="{{ result.url }}" class="list-group-item list-group-item-action">
+                            <div  class="list-group-item list-group-item-action mb-3">
                                 <h5 class="mb-1">{{ result.title }}</h5>
                                 <p class="mb-1">{{ result.snippet | safe }}</p>
-                                <small>{{ result.url }}</small>
-                            </a>
+                                <a href="{{ result.url }}" class="mt-2 d-block" target="_blank">{{ result.url }}</a>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>

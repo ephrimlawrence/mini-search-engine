@@ -22,7 +22,7 @@ if (cluster.isPrimary) {
 		crawledDomains[domain] = { done: false, worker: null };
 	}
 
-	// Fork workers.
+	// Fork workers, with domains to crawl
 	for (let i = 0; i < numCPUs; i++) {
 		const d = domains.pop();
 		if (d != null && !crawledDomains[d].done) {
